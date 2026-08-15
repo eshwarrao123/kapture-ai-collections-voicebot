@@ -1,0 +1,12 @@
+{
+  "name": "kapture-finance-maya",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix mock-backend run dev",
+    "build": "npm --prefix mock-backend run build",
+    "test": "npm --prefix mock-backend run test",
+    "test:run": "npm --prefix mock-backend run test:run",
+    "typecheck": "npm --prefix mock-backend run typecheck"
+  }
+}

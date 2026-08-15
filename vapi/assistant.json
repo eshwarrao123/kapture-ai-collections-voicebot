@@ -1,0 +1,17 @@
+{
+  "name": "Maya - Kapture Finance Collections",
+  "model": {
+    "provider": "openai",
+    "model": "gpt-4o",
+    "temperature": 0.3,
+    "systemPrompt": "You are Maya, an outbound collections agent for Kapture Finance...",
+    "tools": []
+  },
+  "voice": {
+    "provider": "11labs",
+    "voiceId": "YOUR_VOICE_ID"
+  },
+  "firstMessage": "Hello, this is Maya calling from Kapture Finance. I'm reaching out regarding an overdue account. For your security, I need to verify your identity before discussing any details. May I continue?",
+  "serverUrl": "https://<YOUR_NGROK_OR_DOMAIN>/vapi/webhook",
+  "serverUrlSecret": "<CONFIGURE_IN_VAPI_DASHBOARD>"
+}
