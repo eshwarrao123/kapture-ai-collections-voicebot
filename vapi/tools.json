@@ -1,0 +1,233 @@
+[
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "verify_customer",
+      "description": "Authenticate the customer before any debt information can be disclosed. This is the ONLY tool that can establish verified authentication status. Must be called before get_account_details, log_promise_to_pay, or send_payment_link.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "verification_method": {
+            "type": "string",
+            "enum": [
+              "dob",
+              "otp",
+              "last4_phone",
+              "last4_loan"
+            ],
+            "description": "Method of verification: date of birth (DDMMYYYY), 4-digit OTP, last 4 digits of registered phone, or last 4 digits of loan account"
+          },
+          "verification_value": {
+            "type": "string",
+            "description": "The verification value provided by the customer"
+          }
+        },
+        "required": [
+          "verification_method",
+          "verification_value"
+        ]
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "get_account_details",
+      "description": "Retrieve full account and debt details. REQUIRES successful authentication (verify_customer must have returned verified=true). Will return 403 if called on unverified session.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "log_promise_to_pay",
+      "description": "Record a Promise-to-Pay commitment from the customer. REQUIRES successful authentication. Validates date is within 30 days and amount is positive and not exceeding total outstanding.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "ptp_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Promised payment date in YYYY-MM-DD format. Must be today or future, max 30 days out."
+          },
+          "ptp_amount": {
+            "type": "number",
+            "description": "Promised payment amount in INR. Must be > 0 and <= total outstanding."
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "upi",
+              "netbanking",
+              "card",
+              "cash",
+              "other"
+            ],
+            "description": "Optional: intended payment method"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Optional: additional context from customer"
+          }
+        },
+        "required": [
+          "ptp_date",
+          "ptp_amount"
+        ]
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "send_payment_link",
+      "description": "Send a payment link via SMS or WhatsApp (mocked). REQUIRES successful authentication. Defaults to total outstanding amount if amount not specified.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "sms",
+              "whatsapp"
+            ],
+            "description": "Delivery channel for payment link"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Optional: amount for payment link. Defaults to total outstanding."
+          }
+        },
+        "required": [
+          "channel"
+        ]
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "escalate_to_agent",
+      "description": "Transfer the call to a human agent with full context. Can be called from ANY state (does not require authentication). Use for disputes, hardship, hostile behavior, auth failures, or customer request.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": [
+              "dispute",
+              "hardship",
+              "hostile",
+              "auth_failed_max",
+              "customer_request",
+              "complex_case"
+            ],
+            "description": "Reason for escalation"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 1000,
+            "description": "Brief summary of conversation context for the human agent"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "high",
+              "urgent"
+            ],
+            "default": "normal",
+            "description": "Escalation priority"
+          }
+        },
+        "required": [
+          "reason",
+          "summary"
+        ]
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "messages": [],
+    "function": {
+      "name": "mark_disposition",
+      "description": "Log the final call disposition/outcome for reporting. Terminal action - call ends after this. Does not require authentication.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "disposition": {
+            "type": "string",
+            "enum": [
+              "promise_to_pay",
+              "already_paid",
+              "disputed",
+              "hardship",
+              "wrong_person",
+              "do_not_call",
+              "callback_scheduled",
+              "auth_failed_max_retries",
+              "hostile",
+              "no_response",
+              "voicemail",
+              "escalated",
+              "other"
+            ],
+            "description": "Final call outcome"
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Optional: free-text summary of outcome"
+          },
+          "ptp_id": {
+            "type": "string",
+            "description": "Required if disposition is promise_to_pay. The PTP record ID from log_promise_to_pay."
+          },
+          "escalation_id": {
+            "type": "string",
+            "description": "Required if disposition is escalated. The escalation record ID from escalate_to_agent."
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      }
+    },
+    "server": {
+      "url": "https://your-server.com/vapi/webhook"
+    }
+  }
+]

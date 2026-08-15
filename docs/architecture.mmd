@@ -1,0 +1,75 @@
+flowchart TD
+    %% Customer & Telephony
+    Customer[📞 Customer\n(Phone Call)]
+    Vapi[☁️ Vapi Platform\nTelephony + Orchestration]
+    
+    %% Voice Pipeline
+    STT[🎙️ STT\n(Deepgram/Whisper\nStreaming)]
+    LLM[🧠 LLM Orchestrator\n(GPT-4o via Vapi\nAssistant)]
+    TTS[🔊 TTS\n(Streaming)]
+    
+    %% Backend Layer
+    ToolAPI[🔧 Tool/Function API\n(Express + TypeScript\nLocal + ngrok)]
+    SessionStore[(📦 Session State Store\nIn-Memory Map\nKey: call_id)]
+    MockDB[(💾 Mock Datastore\naccounts.json\nStatic Test Data)]
+    
+    %% Auth Boundary
+    AuthBoundary[🔐 AUTHENTICATION BOUNDARY]
+    
+    %% Disposition
+    Disposition[📊 Disposition Logging\nmark_disposition tool]
+    
+    %% Data Flows
+    Customer -->|Audio| Vapi
+    Vapi -->|Audio Stream| STT
+    STT -->|Transcript| LLM
+    LLM -->|Function Calls| ToolAPI
+    ToolAPI -->|Read/Write| SessionStore
+    ToolAPI -->|Read| MockDB
+    ToolAPI -->|Tool Result| LLM
+    LLM -->|Response Text| TTS
+    TTS -->|Audio Stream| Vapi
+    Vapi -->|Audio| Customer
+    
+    %% Auth Boundary Visualization
+    SessionStore -.->|authStatus: pending/verified/failed| AuthBoundary
+    ToolAPI -.->|Enforces: get_account_details,\nlog_promise_to_pay,\nsend_payment_link\nREQUIRE authStatus=verified| AuthBoundary
+    MockDB -.->|Debt Data:\namount, EMI, due date,\ndays_past_due| AuthBoundary
+    
+    %% Styling
+    classDef customer fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef vapi fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef pipeline fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef backend fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    classDef auth fill:#ffebee,stroke:#d32f2f,stroke-width:3px,stroke-dasharray: 5 5
+    classDef disposition fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class Customer customer
+    class Vapi vapi
+    class STT,LLM,TTS pipeline
+    class ToolAPI,SessionStore,MockDB backend
+    class AuthBoundary auth
+    class Disposition disposition
+    
+    %% Subgraphs
+    subgraph "Customer Side"
+        Customer
+    end
+    
+    subgraph "Vapi Cloud Platform"
+        Vapi
+        STT
+        LLM
+        TTS
+    end
+    
+    subgraph "Backend (Local)"
+        ToolAPI
+        SessionStore
+        MockDB
+        Disposition
+    end
+    
+    subgraph "Security Enforcement"
+        AuthBoundary
+    end
