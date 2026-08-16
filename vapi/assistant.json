@@ -11,7 +11,7 @@
     "provider": "11labs",
     "voiceId": "YOUR_VOICE_ID"
   },
-  "firstMessage": "Hello, this is Maya calling from Kapture Finance. I'm reaching out regarding an overdue account. For your security, I need to verify your identity before discussing any details. May I continue?",
+  "firstMessage": "Hello, this is Maya calling from Kapture Finance. May I speak with Rahul Sharma?",
   "serverUrl": "https://<YOUR_NGROK_OR_DOMAIN>/vapi/webhook",
   "serverUrlSecret": "<CONFIGURE_IN_VAPI_DASHBOARD>"
 }

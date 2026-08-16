@@ -47,7 +47,15 @@ export async function vapiWebhookHandler(req: Request, res: Response): Promise<v
 
   const toolName = toolCall.function.name;
   const toolCallId = toolCall.id;
-  const args = toolCall.function.arguments || {};
+  let args = toolCall.function.arguments || {};
+  if (typeof args === 'string') {
+    try {
+      args = JSON.parse(args);
+    } catch (e) {
+      res.status(400).json({ error: 'invalid_arguments', message: 'Failed to parse function arguments' });
+      return;
+    }
+  }
 
   if (!toolMap[toolName]) {
     res.status(200).json({
@@ -106,11 +114,20 @@ export async function vapiWebhookHandler(req: Request, res: Response): Promise<v
 
   // 5. Invoke Internal Tool Logic
   const handler = toolMap[toolName];
+  const startTime = Date.now();
+  let success = true;
+
   try {
     await Promise.resolve(handler(mockReq as Request, mockRes as Response));
   } catch (err: any) {
+    success = false;
     responseBody = { error: 'internal_error', message: err.message };
   }
+
+  const latency = Date.now() - startTime;
+  const maskedCallId = callId.substring(0, 8) + '***';
+
+  console.log(`[VAPI] ${new Date().toISOString()} | Call: ${maskedCallId} | Tool: ${toolName} | Success: ${success && !responseBody?.error} | Latency: ${latency}ms`);
 
   // 6. Return Exact Vapi Response Format
   res.status(200).json({
