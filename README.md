@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 Project Overview
+## Project Overview
 
 Maya is an **outbound Voice AI collections agent** that conducts compliant, empathetic conversations with customers who have overdue loans. This project demonstrates prompt engineering, state machine design, backend authentication enforcement, tool calling, and compliance-aware conversation flow.
 
@@ -12,15 +12,15 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
 
 ---
 
-## 🎯 Assignment Objectives
+## Assignment Objectives
 
-### Task 1: High-Level Design ✅
+### Task 1: High-Level Design 
 - Complete HLD document with architecture, state machine, compliance rules
 - Architecture diagram (Mermaid format)
 - API/tool contracts documentation
 - Authentication and security design
 
-### Task 2: Working Voicebot + Demo ✅
+### Task 2: Working Voicebot + Demo 
 - Vapi voice agent configuration
 - Express.js backend with 6 business tools
 - Webhook adapter for Vapi integration
@@ -29,7 +29,7 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌──────────┐
@@ -67,7 +67,7 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
@@ -81,7 +81,7 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
 
 ---
 
-## 🔐 Authentication & Security Design
+## Authentication & Security Design
 
 ### Critical Rule
 **NEVER disclose debt information before successful customer verification.**
@@ -99,9 +99,9 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
    - Tool usage rules per state
 
 3. **Automated Tests** (Verification)
-   - Test: "get_account_details without auth → 403" ✅
-   - Test: "verify_customer must succeed before debt disclosure" ✅
-   - Test: "Failed verification contains no debt info" ✅
+   - Test: "get_account_details without auth → 403" 
+   - Test: "verify_customer must succeed before debt disclosure" 
+   - Test: "Failed verification contains no debt info" 
 
 ### Authentication Flow
 
@@ -141,7 +141,7 @@ Maya is an **outbound Voice AI collections agent** that conducts compliant, empa
 
 ---
 
-## 📦 Local Setup
+##  Local Setup
 
 ### Prerequisites
 - Node.js 18+ / npm 8+
@@ -177,7 +177,7 @@ ngrok http 3000
 
 ---
 
-## 🎙️ Vapi Setup
+##  Vapi Setup
 
 ### 1. Create Assistant
 
@@ -217,7 +217,7 @@ PORT=3000
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Automated Tests (23 passing)
 
@@ -296,7 +296,7 @@ See `docs/demo-scenarios.md` for 10 comprehensive test scenarios:
 
 ---
 
-## ⚠️ Known Limitations
+##  Known Limitations
 
 ### Mocked Components
 
@@ -328,7 +328,7 @@ See `docs/demo-scenarios.md` for 10 comprehensive test scenarios:
 
 ---
 
-## 🚀 Future Improvements
+##  Future Improvements
 
 If this were a production system:
 
@@ -365,7 +365,7 @@ If this were a production system:
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 | Document | Purpose |
 |----------|---------|
@@ -380,7 +380,7 @@ If this were a production system:
 
 ---
 
-## 📊 Project Statistics
+##  Project Statistics
 
 - **Total Lines:** ~3,200 (code + docs + tests)
 - **Backend Code:** ~800 lines (TypeScript)
@@ -394,7 +394,7 @@ If this were a production system:
 
 ---
 
-## 👤 Test Account (Assignment Scenario)
+##  Test Account (Assignment Scenario)
 
 **For Demo/Testing:**
 
@@ -412,7 +412,7 @@ If this were a production system:
 
 ---
 
-## 🔒 Security Note
+##  Security Note
 
 - **Do not commit `.env` files** — `.gitignore` already excludes them
 - **Webhook secret** should be configured in Vapi dashboard and backend `.env`
@@ -421,13 +421,13 @@ If this were a production system:
 
 ---
 
-## 📝 License
+##  License
 
 Take-home assignment for **Kapture CX AI Delivery Intern** role. Code provided for evaluation purposes. Not licensed for production use.
 
 ---
 
-## 🤝 Assignment Submission
+##  Assignment Submission
 
 **Deliverables:**
 1. ✅ This README
