@@ -54,7 +54,7 @@ export function logPromiseToPayTool(req: AuthenticatedRequest, res: Response): v
     return;
   }
 
-  // Validate amount against total outstanding if account is found
+  // Validate amount against total outstanding if account is found;
   const account = session.accountId ? getAccountById(session.accountId) : undefined;
   if (account && ptp_amount > account.total_outstanding) {
     res.status(400).json({
