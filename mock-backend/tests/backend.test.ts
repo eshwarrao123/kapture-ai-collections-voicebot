@@ -172,6 +172,19 @@ describe('Maya Mock Backend API Tests', () => {
   });
 
   describe('Promise to Pay (PTP)', () => {
+    const today = new Date();
+    const validDate = new Date(today);
+    validDate.setDate(validDate.getDate() + 5);
+    const validDateStr = validDate.toISOString().split('T')[0];
+
+    const pastDate = new Date(today);
+    pastDate.setDate(pastDate.getDate() - 5);
+    const pastDateStr = pastDate.toISOString().split('T')[0];
+
+    const futureDate = new Date(today);
+    futureDate.setDate(futureDate.getDate() + 40);
+    const futureDateStr = futureDate.toISOString().split('T')[0];
+
     it('9. Authenticated user can log a valid PTP', async () => {
       // Authenticate
       await request(app)
@@ -186,7 +199,7 @@ describe('Maya Mock Backend API Tests', () => {
         .post('/tools/log_promise_to_pay')
         .send({
           call_id: 'call_ptp_valid',
-          ptp_date: '2026-08-20',
+          ptp_date: validDateStr,
           ptp_amount: 8499,
           payment_method: 'upi',
           notes: 'Customer will pay via PhonePe',
@@ -216,7 +229,7 @@ describe('Maya Mock Backend API Tests', () => {
         .post('/tools/log_promise_to_pay')
         .send({
           call_id: 'call_ptp_invalid',
-          ptp_date: '2026-08-20',
+          ptp_date: validDateStr,
           ptp_amount: 50000,
         });
 
@@ -228,12 +241,24 @@ describe('Maya Mock Backend API Tests', () => {
         .post('/tools/log_promise_to_pay')
         .send({
           call_id: 'call_ptp_invalid',
-          ptp_date: '2026-11-20',
+          ptp_date: futureDateStr,
           ptp_amount: 5000,
         });
 
       expect(resDate.status).toBe(400);
       expect(resDate.body.error).toBe('invalid_date');
+
+      // c. Invalid date (past date)
+      const resPastDate = await request(app)
+        .post('/tools/log_promise_to_pay')
+        .send({
+          call_id: 'call_ptp_invalid',
+          ptp_date: pastDateStr,
+          ptp_amount: 5000,
+        });
+
+      expect(resPastDate.status).toBe(400);
+      expect(resPastDate.body.error).toBe('invalid_date');
     });
   });
 
@@ -253,7 +278,7 @@ describe('Maya Mock Backend API Tests', () => {
         .send({
           call_id: 'call_pay_link',
           channel: 'sms',
-          amount: 24500,
+          amount: 8499,
         });
 
       expect(res.status).toBe(200);
@@ -285,6 +310,28 @@ describe('Maya Mock Backend API Tests', () => {
 
       expect(res.status).toBe(400);
       expect(res.body.error).toBe('validation_error');
+    });
+
+    it('12.5. Amount exceeding outstanding is rejected', async () => {
+      // Authenticate
+      await request(app)
+        .post('/tools/verify_customer')
+        .send({
+          call_id: 'call_invalid_amt_link',
+          verification_method: 'dob',
+          verification_value: '15081990',
+        });
+
+      const res = await request(app)
+        .post('/tools/send_payment_link')
+        .send({
+          call_id: 'call_invalid_amt_link',
+          channel: 'sms',
+          amount: 50000,
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('invalid_amount');
     });
   });
 

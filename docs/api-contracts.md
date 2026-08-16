@@ -171,12 +171,12 @@ Retrieve full account/debt details **only after successful authentication**.
   "account_id": "acc_456",
   "customer_name": "Rajesh Kumar",
   "loan_type": "Personal Loan",
-  "total_outstanding": 24500.00,
-  "emi_amount": 5000.00,
-  "due_date": "2024-08-15",
-  "days_past_due": 32,
-  "last_payment_date": "2024-07-15",
-  "last_payment_amount": 5000.00
+  "total_outstanding": 8499.00,
+  "emi_amount": 8499.00,
+  "due_date": "2024-08-03",
+  "days_past_due": 12,
+  "last_payment_date": "2024-07-03",
+  "last_payment_amount": 8499.00
 }
 ```
 
@@ -234,7 +234,7 @@ Record a customer's Promise-to-Pay commitment.
 {
   "call_id": "call_abc123",
   "ptp_date": "2024-08-20",
-  "ptp_amount": 10000.00,
+  "ptp_amount": 8499.00,
   "payment_method": "upi",
   "notes": "Customer will pay via PhonePe"
 }
@@ -253,7 +253,7 @@ Record a customer's Promise-to-Pay commitment.
 {
   "ptp_id": "ptp_789",
   "status": "recorded",
-  "confirmation_message": "Your promise to pay ₹10,000 by 20th August has been recorded. You will receive a confirmation SMS."
+  "confirmation_message": "Your promise to pay ₹8,499 by 20th August has been recorded. You will receive a confirmation SMS."
 }
 ```
 
@@ -297,7 +297,7 @@ Send a payment link via SMS or WhatsApp (mocked — logs only).
 {
   "call_id": "call_abc123",
   "channel": "sms",
-  "amount": 24500.00
+  "amount": 8499.00
 }
 ```
 

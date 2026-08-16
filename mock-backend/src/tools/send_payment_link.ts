@@ -37,6 +37,15 @@ export function sendPaymentLinkTool(req: AuthenticatedRequest, res: Response): v
   const session = req.session!;
 
   const account = session.accountId ? getAccountById(session.accountId) : undefined;
+  
+  if (amount && account && amount > account.total_outstanding) {
+    res.status(400).json({
+      error: 'invalid_amount',
+      message: `Payment link amount ₹${amount} cannot exceed total outstanding amount ₹${account.total_outstanding}`,
+    });
+    return;
+  }
+
   const linkAmount = amount ?? account?.total_outstanding ?? 0;
   const sentToPhone = maskPhoneNumber(account?.phone_number);
 
